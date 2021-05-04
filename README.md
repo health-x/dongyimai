@@ -5,4 +5,4 @@
 
 所用技术SSM、dubbo、zookeeper、cas、springSecurity、activemq、redis、fastDFS......
 
-环境:JDK8、IDEA、MySQL
+环境:JDK8、IDEA、MySQL5
