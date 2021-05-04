@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    		http://www.springframework.org/schema/beans/spring-beans.xsd
+    		http://www.springframework.org/schema/context
+    		http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.health.sms"/>
+    
+    <!-- 创建连接工厂 ActiveMQ -->
+    <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://192.168.188.146:61616" />
+    </bean>
+
+    <!-- Spring连接工厂 -->
+    <bean id="connectionFactory"
+          class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="targetConnectionFactory" />
+    </bean>
+
+    <!-- 创建队列，点对点信息 -->
+    <bean id="queueSmsDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="dongyimai-queue-sms" />
+    </bean>
+
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory"/>
+    </bean>
+
+    <!-- 自定义监听类 -->
+    <bean id="smsMessageListener" class="com.health.sms.listener.SmsMessageListener" />
+    <!-- 消息监听容器 -->
+    <bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="destination" ref="queueSmsDestination" />
+        <property name="messageListener" ref="smsMessageListener" />
+    </bean>
+
+</beans>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    		http://www.springframework.org/schema/beans/spring-beans.xsd
+    		http://www.springframework.org/schema/context
+    		http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 创建连接工厂 ActiveMQ -->
+    <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://192.168.188.146:61616" />
+    </bean>
+
+    <!-- Spring连接工厂 -->
+    <bean id="connectionFactory"
+          class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="targetConnectionFactory" />
+    </bean>
+
+    <!-- JMS工具类，它可以进行消息发送、接收等 -->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory" />
+    </bean>
+
+    <!-- 创建队列，点对点信息 -->
+    <bean id="queueSolrDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="dongyimai-queue-solr" />
+    </bean>
+
+    <!-- 创建队列，点对点信息 -->
+    <bean id="queueSolrDeleteDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="dongyimai-queue-solr-delete" />
+    </bean>
+
+    <!-- 创建队列，点对点信息 -->
+    <bean id="queuePageDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="dongyimai-queue-page" />
+    </bean>
+
+    <!-- 创建队列，点对点信息 -->
+    <bean id="queuePageDeleteDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="dongyimai-queue-page-delete" />
+    </bean>
+
+</beans>
